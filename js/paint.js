@@ -10,19 +10,21 @@ var changeBlue = function () {
     blue = document.getElementById("slideBlue").value;
     document.getElementById("outputBlueSlide").textContent = blue;
     document.getElementById("sampleCustomColor").style.backgroundColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
-
+    currentColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
 };
 
 var changeGreen = function () {
     green = document.getElementById("slideGreen").value;
     document.getElementById("outputGreenSlide").textContent = green + "";
     document.getElementById("sampleCustomColor").style.backgroundColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+    currentColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
 };
 
 var changeRed = function () {
     red = document.getElementById("slideRed").value;
     document.getElementById("outputRedSlide").textContent = red + "";
     document.getElementById("sampleCustomColor").style.backgroundColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+    currentColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
 };
 
 
@@ -32,7 +34,7 @@ var mouseUp = true;
 
 
 var changeCurrentColor = function (clickEvent) {
-    currentColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+    currentColor = window.getComputedStyle(clickEvent.target).backgroundColor;
 
 };
 
