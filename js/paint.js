@@ -1,6 +1,3 @@
-/**
- * Created by itc_user on 6/22/2016.
- */
 
 var red = 255;
 var green = 255;
@@ -68,44 +65,72 @@ var resetCanvas = function () {
     }
 };
 
+var createPallets = function () {
+    for (var i = 0; i < colors.length; i++) {
+        var palletSquare = document.createElement("button");
+        palletSquare.classList.add("colorPallet");
+        palletSquare.classList.add(colors[i]);
+        palletSquare.addEventListener("click", changeCurrentColor);
+        document.body.appendChild(palletSquare);
+    }
+    //set reset button and functionality
+    var resetButton = document.createElement("button");
+    resetButton.textContent = "RESET";
+    resetButton.classList.add("resetButton");
+    resetButton.addEventListener("click", resetCanvas);
+    document.body.appendChild(resetButton);
+    document.body.appendChild(document.createElement("br"));
+};
 
-for (var i = 0; i < colors.length; i++) {
-    var palletSquare = document.createElement("button");
-    palletSquare.classList.add("colorPallet");
-    palletSquare.classList.add(colors[i]);
-    palletSquare.addEventListener("click", changeCurrentColor);
-    document.body.appendChild(palletSquare);
-}
+createPallets();
 
-//set reset button and functionality
-var resetButton = document.createElement("button");
-resetButton.textContent = "RESET";
-resetButton.classList.add("resetButton");
-resetButton.addEventListener("click",resetCanvas);
-document.body.appendChild(resetButton);
-document.body.appendChild(document.createElement("br"));
+var createCanvas = function () {
 
-var canvas = document.createElement("div");
-canvas.classList.add("canvas");
+    var canvasSize = parseInt(document.getElementById("canvasSizeUserInput").value);
+    console.log(canvasSize);
+    var pixelSize = 7; //TODO: eventually get a formula for this, don't make it hard-coded
+    var canvas = document.createElement("div");
+    canvas.classList.add("canvas");
+    canvas.style.width = canvasSize + "px";
 
-document.body.appendChild(canvas);
-for (var i = 0; i < 6020; i++) {
+    document.body.appendChild(canvas);
+    for (var i = 0; i < (canvasSize / pixelSize) * (canvasSize / pixelSize); i++) {
+        console.log("i am here");
+        var pixel = document.createElement("div");
+        pixel.classList.add("pixel");
+        pixel.classList.add("white");
+        pixel.addEventListener("contextmenu", erase);
+        pixel.addEventListener("mousedown", setMouseDown);
+        pixel.addEventListener("mouseup", setMouseUp);
+        pixel.addEventListener("mousemove", changeColor);
+        canvas.appendChild(pixel);
+    }
+};
 
-    var pixel = document.createElement("div");
-    pixel.classList.add("pixel");
-    pixel.classList.add("white");
-    pixel.addEventListener("contextmenu",erase);
-    pixel.addEventListener("mousedown", setMouseDown);
-    pixel.addEventListener("mouseup", setMouseUp);
-    pixel.addEventListener("mousemove", changeColor);
 
-    canvas.appendChild(pixel);
+var customCanvas = function () {
+    //get user input to generate custom-sized canvas
+    var canvasSizeLabel = document.createElement("label");
+    canvasSizeLabel.textContent = "Please enter a custom grid size (integer only)";
+    var canvasSizeUserInput = document.createElement("input");
+    canvasSizeUserInput.id = "canvasSizeUserInput";
+    canvasSizeUserInput.placeholder = "500";
+    var canvasSizeSubmit = document.createElement("button");
+    canvasSizeSubmit.textContent = "Generate Canvas";
+    canvasSizeSubmit.addEventListener("click", createCanvas);
 
-}
+    document.body.appendChild(canvasSizeLabel);
+    document.body.appendChild(canvasSizeUserInput);
+    document.body.appendChild(canvasSizeSubmit);
+
+};
+
+customCanvas();
+
 
 var customColorDiv = document.createElement("div");
 var customColorsPrimary = ["Red", "Green", "Blue"];
-for (i = 0; i < customColorsPrimary.length; i++) {
+for (var i = 0; i < customColorsPrimary.length; i++) {
     var labelForColors = document.createElement("label");
     labelForColors.htmlFor = "slide" + customColorsPrimary[i];
     labelForColors.textContent = customColorsPrimary[i];
@@ -116,6 +141,7 @@ for (i = 0; i < customColorsPrimary.length; i++) {
     slideInputForColors.min = "0";
     slideInputForColors.max = "255";
     var outputFromSlide = document.createElement("p");
+    outputFromSlide.classList.add("textForCustomColors");
     outputFromSlide.id = "output" + customColorsPrimary[i] + "Slide";
     outputFromSlide.textContent = "0";
     customColorDiv.appendChild(labelForColors);
