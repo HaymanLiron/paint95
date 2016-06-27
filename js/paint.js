@@ -3,6 +3,9 @@ var red = 255;
 var green = 255;
 var blue = 255;
 
+
+//these three should REALLY all be one function :(
+//I'm embarrassed... :(
 var changeBlue = function () {
     blue = document.getElementById("slideBlue").value;
     document.getElementById("outputBlueSlide").textContent = blue;
@@ -43,9 +46,7 @@ var setMouseUp = function () {
     mouseUp = true;
 };
 
-
 var changeColor = function (event) {
-
     if (!(mouseUp)) {
         event.target.style.backgroundColor = currentColor;
     }
@@ -84,27 +85,36 @@ var createPallets = function () {
 
 createPallets();
 
+var canvas = document.createElement("div");
+canvas.id = "canvas";
+document.body.appendChild(canvas);
 var createCanvas = function () {
-
+    //first we have to remove the previous canvas
+    //in case this is not the first one the user is making
+    canvas.innerHTML = "";
     var canvasSize = parseInt(document.getElementById("canvasSizeUserInput").value);
-    console.log(canvasSize);
     var pixelSize = 7; //TODO: eventually get a formula for this, don't make it hard-coded
-    var canvas = document.createElement("div");
-    canvas.classList.add("canvas");
-    canvas.style.width = canvasSize + "px";
 
-    document.body.appendChild(canvas);
-    for (var i = 0; i < (canvasSize / pixelSize) * (canvasSize / pixelSize); i++) {
-        console.log("i am here");
-        var pixel = document.createElement("div");
-        pixel.classList.add("pixel");
-        pixel.classList.add("white");
-        pixel.addEventListener("contextmenu", erase);
-        pixel.addEventListener("mousedown", setMouseDown);
-        pixel.addEventListener("mouseup", setMouseUp);
-        pixel.addEventListener("mousemove", changeColor);
-        canvas.appendChild(pixel);
+    //method is to make n columns, and each column has n rows
+    //where n = (canvasSize / pixelSize)
+    var n = canvasSize / pixelSize;
+
+    for (var i = 0; i < n; i++) {
+        var canvasColumn = document.createElement("div");
+        canvasColumn.classList.add("canvasColumn");
+        for (var j = 0; j < n; j++) {
+            var pixel = document.createElement("div");
+            pixel.classList.add("pixel");
+            pixel.classList.add("white");
+            pixel.addEventListener("contextmenu", erase);
+            pixel.addEventListener("mousedown", setMouseDown);
+            pixel.addEventListener("mouseup", setMouseUp);
+            pixel.addEventListener("mousemove", changeColor);
+            canvasColumn.appendChild(pixel);
+        }
+        canvas.appendChild(canvasColumn);
     }
+    document.body.appendChild(canvas);
 };
 
 
