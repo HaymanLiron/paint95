@@ -53,7 +53,6 @@ var changeColor = function (event) {
 };
 
 var erase = function (event) {
-    console.log("hi");
     event.preventDefault();
     event.target.style.backgroundColor = "white";
 };
@@ -63,6 +62,18 @@ var resetCanvas = function () {
     for (var i = 0; i < pixels.length; i++) {
         pixels[i].style.backgroundColor = "white";
 
+    }
+};
+
+var rotateCounterClockwise = function () {
+    var canvasColumns = document.getElementsByClassName("canvasColumn");
+    for (var i = canvasColumns.length - 1; i >= 0; i--) {
+        canvasColumns[i].style.display = "block";
+        var pixelsInColumn = canvasColumns[i].getElementsByClassName("pixel");
+        for (var j = 0; j < pixelsInColumn.length; j++) {
+            pixelsInColumn[j].style.display = "inline-block";
+
+        }
     }
 };
 
@@ -80,6 +91,14 @@ var createPallets = function () {
     resetButton.classList.add("resetButton");
     resetButton.addEventListener("click", resetCanvas);
     document.body.appendChild(resetButton);
+
+    //set rotate button and functionality
+    var rotateButton = document.createElement("button");
+    rotateButton.textContent = "ROTATE";
+    rotateButton.classList.add("rotateButton");
+    rotateButton.addEventListener("click", rotateCounterClockwise);
+    document.body.appendChild(rotateButton);
+
     document.body.appendChild(document.createElement("br"));
 };
 
@@ -93,16 +112,11 @@ var createCanvas = function () {
     //in case this is not the first one the user is making
     canvas.innerHTML = "";
     var canvasSize = parseInt(document.getElementById("canvasSizeUserInput").value);
-    var pixelSize = 7; //TODO: eventually get a formula for this, don't make it hard-coded
 
-    //method is to make n columns, and each column has n rows
-    //where n = (canvasSize / pixelSize)
-    var n = canvasSize / pixelSize;
-
-    for (var i = 0; i < n; i++) {
+    for (var i = 0; i < canvasSize; i++) {
         var canvasColumn = document.createElement("div");
         canvasColumn.classList.add("canvasColumn");
-        for (var j = 0; j < n; j++) {
+        for (var j = 0; j < canvasSize; j++) {
             var pixel = document.createElement("div");
             pixel.classList.add("pixel");
             pixel.classList.add("white");
@@ -117,12 +131,16 @@ var createCanvas = function () {
     document.body.appendChild(canvas);
 };
 
-
 var customCanvas = function () {
     //get user input to generate custom-sized canvas
     var canvasSizeLabel = document.createElement("label");
-    canvasSizeLabel.textContent = "Please enter a custom grid size (integer only)";
+    canvasSizeLabel.textContent = "Please select a custom grid size";
     var canvasSizeUserInput = document.createElement("input");
+    canvasSizeUserInput.type = "number";
+    canvasSizeUserInput.min="0";
+    canvasSizeUserInput.max="500";
+    canvasSizeUserInput.step="10";
+    canvasSizeUserInput.value="50";
     canvasSizeUserInput.id = "canvasSizeUserInput";
     canvasSizeUserInput.placeholder = "500";
     var canvasSizeSubmit = document.createElement("button");
@@ -136,7 +154,6 @@ var customCanvas = function () {
 };
 
 customCanvas();
-
 
 var customColorDiv = document.createElement("div");
 var customColorsPrimary = ["Red", "Green", "Blue"];
