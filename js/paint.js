@@ -3,9 +3,20 @@ var red = 255;
 var green = 255;
 var blue = 255;
 
+var currentColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
+var colors = ["white", "purple", "red", "green", "blue", "black"];
+var mouseUp = true;
 
-//these three should REALLY all be one function :(
-//I'm embarrassed... :(
+
+var loadPaint = function () {
+    var canvas = document.createElement("div");
+    canvas.id = "canvas";
+    document.body.appendChild(canvas);
+    createPallets();
+    customCanvas();
+    customColors();
+};
+
 var changeBlue = function () {
     blue = document.getElementById("slideBlue").value;
     document.getElementById("outputBlueSlide").textContent = blue;
@@ -27,19 +38,15 @@ var changeRed = function () {
     currentColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
 };
 
-
-var currentColor = 'rgb(' + red + ',' + green + ',' + blue + ')';
-var colors = ["white", "purple", "red", "green", "blue", "black"];
-var mouseUp = true;
-
-
 var changeCurrentColor = function (clickEvent) {
     currentColor = window.getComputedStyle(clickEvent.target).backgroundColor;
 
 };
 
-var setMouseDown = function () {
-    mouseUp = false;
+var setMouseDown = function (event) {
+    if (event.which === 1){
+        mouseUp = false;
+    }
 };
 
 var setMouseUp = function () {
@@ -48,6 +55,8 @@ var setMouseUp = function () {
 
 var changeColor = function (event) {
     if (!(mouseUp)) {
+        event.target.style.backgroundColor = currentColor;
+    } else if (event.which === 1){
         event.target.style.backgroundColor = currentColor;
     }
 };
@@ -99,14 +108,9 @@ var createPallets = function () {
     rotateButton.addEventListener("click", rotateCounterClockwise);
     document.body.appendChild(rotateButton);
 
-    document.body.appendChild(document.createElement("br"));
 };
 
-createPallets();
 
-var canvas = document.createElement("div");
-canvas.id = "canvas";
-document.body.appendChild(canvas);
 var createCanvas = function () {
     //first we have to remove the previous canvas
     //in case this is not the first one the user is making
@@ -120,9 +124,11 @@ var createCanvas = function () {
             var pixel = document.createElement("div");
             pixel.classList.add("pixel");
             pixel.classList.add("white");
+
             pixel.addEventListener("contextmenu", erase);
             pixel.addEventListener("mousedown", setMouseDown);
             pixel.addEventListener("mouseup", setMouseUp);
+            pixel.addEventListener("click", changeColor);
             pixel.addEventListener("mousemove", changeColor);
             canvasColumn.appendChild(pixel);
         }
@@ -134,6 +140,7 @@ var createCanvas = function () {
 var customCanvas = function () {
     //get user input to generate custom-sized canvas
     var canvasSizeLabel = document.createElement("label");
+    canvasSizeLabel.classList.add("custom-label");
     canvasSizeLabel.textContent = "Please select a custom grid size";
     var canvasSizeUserInput = document.createElement("input");
     canvasSizeUserInput.type = "number";
@@ -153,35 +160,37 @@ var customCanvas = function () {
 
 };
 
-customCanvas();
+var customColors = function () {
+    var customColorDiv = document.createElement("div");
+    var customColorsPrimary = ["Red", "Green", "Blue"];
+    for (var i = 0; i < customColorsPrimary.length; i++) {
+        var labelForColors = document.createElement("label");
+        labelForColors.htmlFor = "slide" + customColorsPrimary[i];
+        labelForColors.textContent = customColorsPrimary[i];
+        var slideInputForColors = document.createElement("input");
+        slideInputForColors.addEventListener("change", eval("change" + customColorsPrimary[i]));
+        slideInputForColors.id = "slide" + customColorsPrimary[i];
+        slideInputForColors.type = "range";
+        slideInputForColors.min = "0";
+        slideInputForColors.max = "255";
+        var outputFromSlide = document.createElement("p");
+        outputFromSlide.classList.add("textForCustomColors");
+        outputFromSlide.id = "output" + customColorsPrimary[i] + "Slide";
+        outputFromSlide.textContent = "0";
+        customColorDiv.appendChild(labelForColors);
+        customColorDiv.appendChild(slideInputForColors);
+        customColorDiv.appendChild(outputFromSlide);
+    }
 
-var customColorDiv = document.createElement("div");
-var customColorsPrimary = ["Red", "Green", "Blue"];
-for (var i = 0; i < customColorsPrimary.length; i++) {
-    var labelForColors = document.createElement("label");
-    labelForColors.htmlFor = "slide" + customColorsPrimary[i];
-    labelForColors.textContent = customColorsPrimary[i];
-    var slideInputForColors = document.createElement("input");
-    slideInputForColors.addEventListener("change", eval("change" + customColorsPrimary[i]));
-    slideInputForColors.id = "slide" + customColorsPrimary[i];
-    slideInputForColors.type = "range";
-    slideInputForColors.min = "0";
-    slideInputForColors.max = "255";
-    var outputFromSlide = document.createElement("p");
-    outputFromSlide.classList.add("textForCustomColors");
-    outputFromSlide.id = "output" + customColorsPrimary[i] + "Slide";
-    outputFromSlide.textContent = "0";
-    customColorDiv.appendChild(labelForColors);
-    customColorDiv.appendChild(slideInputForColors);
-    customColorDiv.appendChild(outputFromSlide);
-}
+    var sampleCustomColorDiv = document.createElement("div");
+    sampleCustomColorDiv.id = "sampleCustomColor";
+    sampleCustomColorDiv.classList.add("sampleCustomColorDiv");
+    customColorDiv.appendChild(sampleCustomColorDiv);
 
-var sampleCustomColorDiv = document.createElement("div");
-sampleCustomColorDiv.id = "sampleCustomColor";
-sampleCustomColorDiv.classList.add("sampleCustomColorDiv");
-customColorDiv.appendChild(sampleCustomColorDiv);
+    document.body.appendChild(customColorDiv);
 
-document.body.appendChild(customColorDiv);
+};
+
 
 
 
